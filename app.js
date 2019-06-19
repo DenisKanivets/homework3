@@ -16,6 +16,7 @@ let activePlayer = 0;
 let current = 0;
 const diceElement = document.querySelector('.dice');
 const diceElement2 = document.querySelector('.dice2');
+const limit = document.getElementById('limit');
 
 const initGame = () => {
     document.querySelector('#current-0').textContent = 0;
@@ -38,11 +39,13 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
     diceElement2.src = `dice-${dice2}.png`;
     diceElement2.style.display = 'block';
 
+    let limitNum = limit.value ? Number(limit.value) : 100;
+
     if (dice !== 2 && dice2 !== 2 && dice !== dice2) {
         current += dice + dice2;
         document.getElementById('current-' + activePlayer).textContent = current;
 
-        if (scores[activePlayer] + current >= 20) {
+        if (scores[activePlayer] + current >= limitNum) {
             alert(`Player ${activePlayer} won!!!`);
         }
 
