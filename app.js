@@ -38,7 +38,7 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
     diceElement2.src = `dice-${dice2}.png`;
     diceElement2.style.display = 'block';
 
-    if (dice !== RESET_VALUE && dice2 !== RESET_VALUE) {
+    if (dice !== 2 && dice2 !== 2 && dice !== dice2) {
         current += dice + dice2;
         document.getElementById('current-' + activePlayer).textContent = current;
 
