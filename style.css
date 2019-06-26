@@ -140,10 +140,29 @@ i {
 .dice {
     position: absolute;
     left: 50%;
-    top: 178px;
+    top: 100px;
     transform: translateX(-50%);
     height: 100px;
     box-shadow: 0px 10px 60px rgba(0, 0, 0, 0.10);
+}
+
+.dice2 {
+    position: absolute;
+    left: 50%;
+    top: 220px;
+    transform: translateX(-50%);
+    height: 100px;
+    box-shadow: 0px 10px 60px rgba(0, 0, 0, 0.10);
+}
+
+#limit {
+    position: absolute;
+    left: 50%;
+    bottom: 15%;
+    transform: translate(-50%, -50%);
+    outline: none;
+    border: 1px solid #555;
+    font-size: 16px;
 }
 
 .winner { background-color: #f7f7f7; }
