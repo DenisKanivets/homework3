@@ -26,15 +26,24 @@ const Gamer = function () {
     this.resetScore = function () {
         this.setScore(0);
     }
+
+    this.getPreviousWins = function () {
+        const winners = getWinnersFromLocalStorage();
+        const matchedPlayer = winners.find(winner => winner.name === this.name);
+        if (!matchedPlayer) return 0;
+        return confirm(`There is a player with the same name "${matchedPlayer.name}" and ${matchedPlayer.wins} wins. It's you?`) ? matchedPlayer.wins : false;
+    }
 }
 
 const Player = function () {
     this.name = this.getName();
     this.score = 0;
+    this.wins = this.getPreviousWins();
 }
 
 Player.prototype = new Gamer();
 
+const LOCALSTORAGE_WINNERS_KEY = 'winners';
 const RESET_VALUE = 1;
 
 let players = [];
@@ -43,6 +52,7 @@ let current = 0;
 const diceElement = document.querySelector('.dice');
 const diceElement2 = document.querySelector('.dice2');
 const limit = document.getElementById('limit');
+const showWinnersBtn = document.getElementById('winners');
 
 const initGame = () => {
     players = [
@@ -78,6 +88,8 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
         document.getElementById('current-' + activePlayer).textContent = current;
 
         if (players[activePlayer].getScore() + current >= limitNum) {
+            players[activePlayer].wins += 1;
+            saveWinnersToLocalStorage();
             alert(`${players[activePlayer].name} won!!!`);
         }
 
@@ -85,6 +97,20 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
         changePlayer();
     }
 });
+
+showWinnersBtn.addEventListener('click', function () {
+    const winners = getWinnersFromLocalStorage();
+    let message = 'Nobody wins yet';
+
+    if (winners.length) {
+        message = winners
+            .sort((a, b) => b.wins - a.wins)
+            .map(player => `${player.wins} - ${player.name}`)
+            .join('\n');
+    }
+
+    alert(message);
+})
 
 const changePlayer = () => {
     current = 0;
@@ -105,3 +131,22 @@ document.querySelector('.btn-hold').addEventListener('click', function () {
 document.querySelector('.btn-new').addEventListener('click', function () {
     initGame();
 });
+
+function getWinners() {
+    return players.filter(player => player.wins > 0);
+  }
+  
+  function saveWinnersToLocalStorage() {
+    const winnersFromLocalStorage = getWinnersFromLocalStorage();
+    const winners = getWinners();
+    const winnersFromLocalStorageWithoutCurrentWinners = winnersFromLocalStorage.filter(winnerFromLocalStorage => { 
+      return !winners.some(winner => winnerFromLocalStorage.name === winner.name);
+    })
+  
+    const updatedWinnersFromLocalStorage = [...winnersFromLocalStorageWithoutCurrentWinners, ...winners];
+    localStorage.setItem(LOCALSTORAGE_WINNERS_KEY, JSON.stringify(updatedWinnersFromLocalStorage));
+  }
+  
+  function getWinnersFromLocalStorage() {
+    return localStorage.getItem(LOCALSTORAGE_WINNERS_KEY) ? JSON.parse(localStorage.getItem(LOCALSTORAGE_WINNERS_KEY)) : [];
+  } 
